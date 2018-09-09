@@ -83,6 +83,9 @@ session env m = runGhc (Just libdir) $ do
   env <- getSession
   return (env,a)
 
+-- | Evaluate a string as an expression. Creates a monad that returns the
+-- expression's value or fails if the expression was not of the expected
+-- type.
 eval :: Typeable a => String -> Ghc a
 eval inp = do
   (Just (exp::a)) <- fromDynamic <$> dynCompileExpr inp
