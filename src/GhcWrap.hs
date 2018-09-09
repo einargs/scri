@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module GhcWrap (launch) where
 import GHC
 import GHC.Paths
@@ -72,18 +74,25 @@ initSession = runGhc (Just libdir) $ do
   return env
 
 
-session :: HscEnv -> Ghc a -> IO HscEnv
+-- | Run something inside the environment. Return the updated enviornment
+-- and the result of what was run.
+session :: HscEnv -> Ghc a -> IO (HscEnv, a)
 session env m = runGhc (Just libdir) $ do
   setSession env
-  m
+  a <- m
   env <- getSession
-  return env
+  return (env,a)
+
+eval :: Typeable a => String -> Ghc a
+eval inp = do
+  (Just (exp::a)) <- fromDynamic <$> dynCompileExpr inp
+  return exp
 
 -- | Takes a string, compiles it, and forces it to be an IO action (I think).
 -- Then uses 'liftIO' to lift it up and run it as part of the GHC monad.
-evalIO :: String -> Ghc ()
+evalIO :: Typeable a => String -> Ghc a
 evalIO inp = do
-  (Just act) <- fromDynamic <$> dynCompileExpr inp
+  act :: IO a <- eval inp
   liftIO act
 
 -- | Launch a session. Temporary/placeholder.
@@ -91,5 +100,6 @@ evalIO inp = do
 launch :: IO ()
 launch = do
   env <- initSession
-  act <- session env $ evalIO "locCommand"
+  (env', act::Int) <- session env $ evalIO "locCommand"
+  print act
   return ()

@@ -1,8 +1,9 @@
-module MainTest where
+module Example (locCommand) where
 
-locCommand :: IO ()
+locCommand :: IO Int
 locCommand = do
   putStrLn "Can run a local command"
+  return 2
 
 main :: IO ()
 main = do
