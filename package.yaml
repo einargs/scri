@@ -26,6 +26,11 @@ dependencies:
 - ghc-paths
 - ghc
 - filepath
+- array
+
+build-tools:
+  - happy
+  - alex
 
 library:
   source-dirs: src
