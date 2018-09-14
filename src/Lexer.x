@@ -22,6 +22,7 @@ $cmdc = [ \n [^ $semic ] ]
 @lines = $linec+
 
 scri :-
+  <0> "//" .+ / \n { skip }
   <0> ^$fs { (tok T.BeginCommand) `andBegin` command }
   <0> $astrisk{3} { tok T.BoldAndItalic }
   <0> $astrisk{2} { tok T.Bold }

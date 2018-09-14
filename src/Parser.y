@@ -54,6 +54,7 @@ OptionalPbreak
   | {- empty -} { () }
 
 StmtSeq :: { [Stmt] }
+StmtSeq
   : StmtSeq pbreak Stmt { $3:$1 }
   | Stmt { [$1] }
 
