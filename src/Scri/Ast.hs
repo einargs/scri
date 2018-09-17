@@ -9,7 +9,7 @@ type FmtColour = Colour Double
 --
 -- 'Script' represents a single @.scri@ file. It is a
 -- pipeline of operations that are applied to the context.
-data Script = Script [Stmt] deriving Show
+data Script = Script [Stmt] deriving (Show, Eq)
 
 -- | A 'Stmt' is a representation of a single operation
 -- on the monadic context of the scri file.
@@ -17,7 +17,7 @@ data Stmt
   -- | Enque the text representation in the output.
   = PutText FmtText
   | RunCmd String
-  deriving (Show)
+  deriving (Show, Eq)
   {- Commented out for a future, more complex syntax
   | PutExpr Expr
   | VarInit VarSym Expr
@@ -36,7 +36,7 @@ data FmtText
   | EmDash
   | Coloured FmtText FmtColour
   | ReplaceWith String
-  deriving (Show)
+  deriving (Show, Eq)
 
 {- Commented out for a future, more complex syntax
 -- | Represents an expression that produces a haskell value.

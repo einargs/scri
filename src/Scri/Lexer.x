@@ -1,5 +1,5 @@
 {
-module Lexer where
+module Scri.Lexer where
 import qualified Scri.Token as T
 }
 
@@ -30,8 +30,7 @@ scri :-
   <0> "-"{2} { tok T.EmDash }
   <0> "$" @lowId { strTok T.VarSub }
   <0> @lines { strTok T.ParagraphSection }
-  <0> \n{2,} { tok T.ParagraphBreak }
-  <0> \n { skip }
+  <0> \n { tok T.LineBreak }
  
   <command> ";"$ { (tok T.EndCommand) `andBegin` 0 }
   <command> $cmdc+ { strTok T.CommandText }

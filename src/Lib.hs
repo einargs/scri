@@ -4,11 +4,11 @@ module Lib
     ( parseStdIn
     ) where
 
-import GhcWrap
+import Scri.GhcWrap
 import Scri.Ast
 import qualified Scri.Token as T
-import Lexer
-import Parser
+import Scri.Lexer
+import Scri.Parser
 import Control.Monad.IO.Class
 import System.Environment
 import qualified Data.List as List

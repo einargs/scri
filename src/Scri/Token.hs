@@ -3,7 +3,7 @@ module Scri.Token where
 data Token
   -- Markup tokens
   = ParagraphSection String
-  | ParagraphBreak
+  | LineBreak
   | Italic
   | Bold
   | BoldAndItalic

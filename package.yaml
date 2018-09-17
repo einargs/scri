@@ -56,3 +56,8 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - scri-interpreter
+    - raw-strings-qq
+    - hspec
+    - free
+    - neat-interpolation
+    - text

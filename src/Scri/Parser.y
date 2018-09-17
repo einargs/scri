@@ -1,8 +1,8 @@
 {
-module Parser where
+module Scri.Parser where
 import qualified Scri.Token as T
 import Scri.Ast
-import Lexer
+import Scri.Lexer
 import Control.Monad.State.Lazy
 import Control.Monad.Identity
 }
@@ -16,7 +16,7 @@ import Control.Monad.Identity
 
 %token
   psection { T.ParagraphSection $$ }
-  pbreak { T.ParagraphBreak }
+  linebreak { T.LineBreak }
   italic { T.Italic }
   bold { T.Bold }
   boldAndItalic { T.BoldAndItalic }
@@ -46,43 +46,73 @@ import Control.Monad.Identity
 
 Script :: { Script }
 Script
-  : OptionalPbreak StmtSeq OptionalPbreak { Script (reverse $2) }
+  : OptionalPBreak StmtSeq OptionalPBreak { Script (reverse $2) }
 
-OptionalPbreak :: { () }
-OptionalPbreak
-  : pbreak { () }
+PBreak :: { () }
+PBreak
+  : PBreak linebreak { () }
+  | linebreak { () }
+
+OptionalPBreak :: { () }
+OptionalPBreak
+  : PBreak { () }
   | {- empty -} { () }
 
 StmtSeq :: { [Stmt] }
 StmtSeq
-  : StmtSeq pbreak Stmt { $3:$1 }
+  : StmtSeq PBreak Stmt { $3:$1 }
   | Stmt { [$1] }
 
 Stmt :: { Stmt }
 Stmt
-  : FmtTextGroup { PutText $1 }
+  : FmtGroup(FmtText) { PutText $1 }
   | beginCommand commandText endCommand { RunCmd $2 }
 
-FmtText1 :: { FmtText }
-FmtText1
-  : italic FmtTextGroup italic { Italic $2 }
-  | bold FmtTextGroup bold { Bold $2 }
-  | boldAndItalic FmtTextGroup boldAndItalic { Bold (Italic $2) }
-  | varSub { ReplaceWith (drop 1 $1) }
+FmtText :: { FmtText }
+FmtText
+  : FmtTextB { $1 }
+  | FmtTextI { $1 }
+  | FmtTextBI { $1 }
   | FmtText0 { $1 }
 
+FmtTextBI :: { FmtText }
+FmtTextBI
+  : boldAndItalic
+    FmtGroupW2(FmtTextB, FmtTextI)
+    boldAndItalic
+    { Bold (Italic $2) }
+
+FmtTextB :: { FmtText }
+FmtTextB
+  : bold FmtGroupW2(FmtTextB, FmtTextBI) bold { Bold $2 }
+
+FmtTextI :: { FmtText }
+FmtTextI
+  : italic FmtGroupW2(FmtTextB, FmtTextBI) italic { Italic $2 }
+
+FmtGroupW2(e1,e2)
+  : FmtGroup(FmtTextW2(e1,e2)) { $1 }
+
+FmtGroup(fmt)
+  : List1(fmt) { Group $1 }
+
+FmtTextW2(e1,e2)
+  : FmtText0 { $1 }
+  | e1 { $1 }
+  | e2 { $1 }
+
+FmtText0 :: { FmtText }
 FmtText0
   : emDash { EmDash }
-  | psection { Plain (map  (\c -> if c=='\n' then ' ' else c) $1) }
+  | varSub { ReplaceWith (drop 1 $1) }
+  | psection { Plain $1 }
 
-FmtTextGroup :: { FmtText }
-FmtTextGroup
-  : FmtTextSeq { Group $1 }
+List1(p)
+  : RevList1(p) { reverse $1 }
 
-FmtTextSeq :: { [FmtText] }
-  : FmtTextSeq FmtText1 { $2:$1 }
-  | FmtText1 { [$1] }
-
+RevList1(p)
+  : RevList1(p) p { $2:$1 }
+  | p { [$1] }
 
 {- Commented out for a future, more complex syntax
 Command :: { Stmt }

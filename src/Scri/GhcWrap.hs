@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module GhcWrap (launch) where
+module Scri.GhcWrap (launch) where
 import GHC
 import GHC.Paths
 import Control.Monad (forM_)
