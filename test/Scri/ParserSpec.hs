@@ -60,6 +60,17 @@ spec = do
             p "p1"
             p "p2"
             p "p3"
+      it "handles comments after text" $ do
+        shouldParseTo [text|
+          p1 // c1
+
+          p2 //     c2
+
+          p3 has a comment // c3 is longer
+          |] $ do
+            p "p1 "
+            p "p2 "
+            p "p3 has a comment "
     
     context "when handling italics" $ do
       it "parses italic text with no surrounding plain text" $ do

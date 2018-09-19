@@ -10,11 +10,12 @@ $lowc = [a-z]
 $highc = [A-Z]
 $alpha = [a-zA-Z]
 $alphaNum = [$alpha $digit]
-$fs = \
+$forward_slash = \
+$back_slash = \/
 $astrisk = \42
 $semic = \59
 
-$linec = [^ \- $fs $astrisk \n]
+$linec = [^ \- $back_slash $forward_slash $astrisk \n]
 $cmdc = [ \n [^ $semic ] ]
 
 @lowId = $lowc $alphaNum*
@@ -23,7 +24,7 @@ $cmdc = [ \n [^ $semic ] ]
 
 scri :-
   <0> "//" .+ / \n { skip }
-  <0> ^$fs { (tok T.BeginCommand) `andBegin` command }
+  <0> ^$forward_slash { (tok T.BeginCommand) `andBegin` command }
   <0> $astrisk{3} { tok T.BoldAndItalic }
   <0> $astrisk{2} { tok T.Bold }
   <0> $astrisk { tok T.Italic }
@@ -34,6 +35,7 @@ scri :-
  
   <command> ";"$ { (tok T.EndCommand) `andBegin` 0 }
   <command> $cmdc+ { strTok T.CommandText }
+  
 
 {
   {- Commented out for a future, more complex syntax
