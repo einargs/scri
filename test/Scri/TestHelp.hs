@@ -9,7 +9,6 @@ module Scri.TestHelp
   , emDash
   , cmd
   , shouldParseTo
-  , text
   ) where
 
 import Control.Monad.Free

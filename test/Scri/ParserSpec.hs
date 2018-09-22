@@ -2,6 +2,9 @@
 module Scri.ParserSpec (spec) where
 
 import Test.Hspec
+import Data.Text (Text, unpack)
+
+import NeatInterpolation (text)
 
 import Scri.TestHelp
 import Scri.Parser (parse)
@@ -60,6 +63,7 @@ spec = do
             p "p1"
             p "p2"
             p "p3"
+
       it "handles comments after text" $ do
         shouldParseTo [text|
           p1 // c1
@@ -141,3 +145,66 @@ spec = do
               s ". Isn't that "
               i "cool"
               s "?"
+    context "when dealing with commands" $ do
+      it "parses a single command" $ do
+        shouldParseTo [text|
+          \test1 arg1 arg2;
+          |] $ do
+            cmd "test1 arg1 arg2"
+
+      it "parses multiple commands" $ do
+        shouldParseTo [text|
+          \test1 arg1 arg2;
+          \test2 arg1 arg2;
+          |] $ do
+            cmd "test1 arg1 arg2"
+            cmd "test2 arg1 arg2"
+
+      it "parses multiple commands interspersed by paragraphs" $ do
+        shouldParseTo [text|
+          \test1 a1 a2 a3 a4;
+          
+          p1
+          
+          \test2 a1;
+          
+          p2
+          
+          \test3 a1 a2; 
+          |] $ do
+            cmd "test1 a1 a2 a3 a4"
+            p "p1"
+            cmd "test2 a1"
+            p "p2"
+            cmd "test3 a1 a2"
+      
+      it "parses a multiline command" $ do
+        shouldParseTo [text|
+          \test ComplexArgs
+            { kwarg1 = "v1"
+            , kwarg2 = 123
+            };
+          |] $ do
+            cmd "test ComplexArgs\n  { kwarg1 = \"v1\"\n  , kwarg2 = 123\n  }"
+
+      it "parses several multiline commands" $ do
+        shouldParseTo [text|
+          \test1
+            a1
+            a2;
+
+          p1
+
+          \test2
+            a1
+            a2;
+
+          p3
+
+          \test a1 a2;
+          |] $ do
+            cmd "test1\n  a1\n  a2"
+            p "p1"
+            cmd "test2\n  a1\n  a2"
+            p "p3"
+            cmd "test a1 a2"
