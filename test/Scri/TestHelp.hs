@@ -6,7 +6,6 @@ module Scri.TestHelp
   , ig
   , b
   , bg
-  , emDash
   , cmd
   , shouldParseTo
   ) where
@@ -85,9 +84,6 @@ ig builder = link $ Italic $ group builder
 
 bg :: FmtBuilder n -> FmtBuilder ()
 bg builder = link $ Bold $ group builder
-
-emDash :: FmtBuilder ()
-emDash = link EmDash
 
 cmd :: String -> StmtBuilder ()
 cmd s = link $ RunCmd s

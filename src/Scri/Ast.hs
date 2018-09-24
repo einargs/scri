@@ -26,14 +26,11 @@ data Stmt
   -}
 
 -- | Represents formatted text.
---
--- Consider adding an EnDash.
 data FmtText
   = Plain String
   | Group [FmtText]
   | Bold FmtText
   | Italic FmtText
-  | EmDash
   | Coloured FmtText FmtColour
   | ReplaceWith String
   deriving (Show, Eq)

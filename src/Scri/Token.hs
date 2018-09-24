@@ -7,7 +7,6 @@ data Token
   | Italic
   | Bold
   | BoldAndItalic
-  | EmDash
   | VarSub String
   | EOFToken
   | BeginCommand

@@ -15,7 +15,7 @@ $back_slash = \/
 $astrisk = \42
 $semic = \59
 
-$linec = [^ \- $back_slash $forward_slash $astrisk \n]
+$linec = [^ $back_slash $forward_slash $astrisk \n]
 $cmdc = [ \n [^ $semic ] ]
 
 @lowId = $lowc $alphaNum*
@@ -28,7 +28,6 @@ scri :-
   <0> $astrisk{3} { tok T.BoldAndItalic }
   <0> $astrisk{2} { tok T.Bold }
   <0> $astrisk { tok T.Italic }
-  <0> "-"{2} { tok T.EmDash }
   <0> "$" @lowId { strTok T.VarSub }
   <0> @lines { strTok T.ParagraphSection }
   <0> \n { tok T.LineBreak }
