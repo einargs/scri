@@ -32,7 +32,7 @@ data FmtText
   | Bold FmtText
   | Italic FmtText
   | Coloured FmtText FmtColour
-  | ReplaceWith String
+  | VarSub String
   deriving (Show, Eq)
 
 {- Commented out for a future, more complex syntax

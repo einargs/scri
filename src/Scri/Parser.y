@@ -102,7 +102,7 @@ FmtTextW2(e1,e2)
 
 FmtText0 :: { FmtText }
 FmtText0
-  : varSub { ReplaceWith (drop 1 $1) }
+  : varSub { VarSub (drop 1 $1) }
   | psection { Plain $1 }
 
 List1(p)

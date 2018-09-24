@@ -15,10 +15,10 @@ $back_slash = \/
 $astrisk = \42
 $semic = \59
 
-$linec = [^ $back_slash $forward_slash $astrisk \n]
+$linec = [^ \$ $back_slash $forward_slash $astrisk \n]
 $cmdc = [ \n [^ $semic ] ]
 
-@lowId = $lowc $alphaNum*
+@lowId = $lowc [$alphaNum _]*
 @highId = $highc $alphaNum*
 @lines = $linec+
 

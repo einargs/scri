@@ -208,3 +208,47 @@ spec = do
             cmd "test2\n  a1\n  a2"
             p "p3"
             cmd "test a1 a2"
+    context "when dealing with variable substitution" $ do
+      it "handles names with just characters" $ do
+        shouldParseTo [text|
+          Hello $$mcName!
+
+          How is $$someCharName doing?
+          |] $ do
+            g $ do
+              s "Hello "
+              vs "mcName"
+              s "!"
+            g $ do
+              s "How is "
+              vs "someCharName"
+              s " doing?"
+
+      it "handles variables with underscores" $ do
+        shouldParseTo [text|
+          p1 contains $$var_sub_one.
+
+          p2 contains $$var_sub_two.
+          |] $ do
+            g $ do
+              s "p1 contains "
+              vs "var_sub_one"
+              s "."
+            g $ do
+              s "p2 contains "
+              vs "var_sub_two"
+              s "."
+
+      it "handles variables with numbers" $ do
+        shouldParseTo [text|
+          p1 contains $$var1, $$var2, and even $$var3.
+          |] $ do
+            g $ do
+              s "p1 contains "
+              vs "var1"
+              s ", "
+              vs "var2"
+              s ", and even "
+              vs "var3"
+              s "."
+
